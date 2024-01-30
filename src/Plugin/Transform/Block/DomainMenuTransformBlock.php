@@ -216,11 +216,7 @@ class DomainMenuTransformBlock extends TransformBlockBase {
     $result = [];
     foreach ($items as $array) {
       $item = $array;
-      $uuid = $item['original_link']->getDerivativeId();
-      $entity = \Drupal::service('entity.repository')
-          ->loadEntityByUuid('menu_link_content', $uuid);
-      $item['theme'] = $entity->field_theme->value;
-      /** @var Url $url */
+      /** @var \Drupal\Core\Url $url */
       $url = $array['url'];
       $item['url'] = $url->toString();
       $item['url_options'] = $url->getOptions();
