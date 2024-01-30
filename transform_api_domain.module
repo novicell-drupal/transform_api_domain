@@ -1,0 +1,63 @@
+<?php
+
+use Drupal\Core\Access\AccessResult;
+
+/**
+ * Implements hook_user_login().
+ */
+function transform_api_domain_user_login(\Drupal\user\UserInterface $account): void {
+  /** @var \Drupal\transform_api_domain\TransformDomainService $domain_service */
+  $domain_service = \Drupal::service('transform_api_domain.service');
+
+  $current_domain = $domain_service->getCurrentDomain();
+
+  if ($domain_service->userHasAccess($current_domain)) {
+    return;
+  }
+
+  $available_domains = $domain_service->getAvailableDomains();
+
+  if (empty($available_domains)) {
+    return;
+  }
+
+  $domain_service->setActiveDomain(reset($available_domains)->id());
+}
+
+/**
+ * Implements hook_entity_access().
+ */
+function transform_api_domain_node_access(\Drupal\Core\Entity\EntityInterface $entity, $operation, \Drupal\Core\Session\AccountInterface $account) {
+  if (in_array('editor', $account->getRoles())) {
+    return _transform_api_domain_restrict_node_to_editor($entity);
+  }
+
+  return AccessResult::neutral();
+}
+
+function _transform_api_domain_restrict_node_to_editor(\Drupal\Core\Entity\EntityInterface $entity): ?AccessResult {
+  /** @var \Drupal\transform_api_domain\TransformDomainService $domain_service */
+  $domain_service = \Drupal::service('transform_api_domain.service');
+
+  $current_domain = $domain_service->getCurrentDomain();
+
+  // If node has access to all domains, allow access.
+  if ($entity->get('field_domain_all_affiliates')->value) {
+    return AccessResult::neutral();
+  }
+
+  $node_domains = $entity->get('field_domain_access')->getValue();
+
+  if (empty($node_domains)) {
+    return AccessResult::forbidden();
+  }
+
+  // If node has access to current domain, allow access.
+  foreach ($node_domains as $node_domain) {
+    if ($node_domain['target_id'] === $current_domain->id()) {
+      return AccessResult::neutral();
+    }
+  }
+
+  return AccessResult::forbidden();
+}

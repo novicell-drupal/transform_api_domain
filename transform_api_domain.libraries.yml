@@ -1,0 +1,5 @@
+admin-theme:
+  version: VERSION
+  css:
+    theme:
+      css/transform-api-domain.css: {}

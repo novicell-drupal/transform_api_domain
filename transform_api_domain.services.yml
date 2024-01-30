@@ -1,0 +1,23 @@
+services:
+  transform_api_domain.service:
+    class: Drupal\transform_api_domain\TransformDomainService
+    arguments:
+      [
+        '@entity_type.manager',
+        '@current_user',
+        '@domain_access.manager',
+        '@domain.negotiator',
+        '@request_stack',
+      ]
+
+  cache_context.editor_session:
+    class: Drupal\transform_api_domain\Cache\Context\EditorSessionCacheContext
+    arguments: [ '@request_stack' ]
+    tags:
+      - { name: cache.context }
+
+  cache_context.domain:
+    class: Drupal\transform_api_domain\Cache\Context\DomainCacheContext
+    arguments: [ '@request_stack' ]
+    tags:
+      - { name: cache.context }

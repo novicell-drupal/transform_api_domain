@@ -1,0 +1,10 @@
+name: 'Transform API Domain'
+type: module
+description: 'Contains custom domain functionality.'
+package: Drupal Premium
+core_version_requirement: ^10
+version: '1.0'
+
+dependencies:
+  - domain:domain
+  - domain:domain_access

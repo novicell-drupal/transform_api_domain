@@ -1,0 +1,23 @@
+transform_api_domain.change_domain:
+  path: '/admin/transform_api_domain/change-domain/{domain_id}'
+  defaults:
+    _controller: '\Drupal\transform_api_domain\Controller\TransformDomainController::changeDomain'
+    _title: 'Change domain'
+  requirements:
+    authentication: 'TRUE'
+
+transform_api_domain.debug:
+  path: '/debug/request'
+  defaults:
+    _controller: '\Drupal\transform_api_domain\Controller\DebugController:debugRequest'
+    _title: 'Change domain'
+  requirements:
+    authentication: 'TRUE'
+
+language.negotiation_request_domain:
+  path: '/admin/config/regional/language/detection/request_domain'
+  defaults:
+    _form: '\Drupal\transform_api_domain\Form\NegotiationRequestDomainForm'
+    _title: 'Request domain language detection configuration'
+  requirements:
+    _permission: 'administer languages'

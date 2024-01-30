@@ -1,0 +1,11 @@
+{
+    "name": "novicell/transform_api_domain",
+    "type": "drupal-module",
+    "description": "Transform API Domain",
+    "license": "GPL-2.0+",
+    "homepage": "https://www.novicell.dk",
+    "minimum-stability": "dev",
+    "require": {
+        "drupal/core": "^10"
+    }
+}
