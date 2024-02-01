@@ -6,9 +6,9 @@ use Drupal\Core\Cache\Context\RequestStackCacheContextBase;
 use Drupal\transform_api_domain\TransformDomainService;
 
 /**
- * Defines the EgmontSessionCacheContext service, for "per domain" caching.
+ * Defines the EditorSessionCacheContext service, for "per domain" caching.
  *
- * Cache context ID: 'egmont_session'.
+ * Cache context ID: 'editor_session'.
  */
 class EditorSessionCacheContext extends RequestStackCacheContextBase {
 
@@ -16,7 +16,7 @@ class EditorSessionCacheContext extends RequestStackCacheContextBase {
    * {@inheritdoc}
    */
   public static function getLabel() {
-    return t('Egmont session');
+    return t('Editor session');
   }
 
   public function getContext() {
