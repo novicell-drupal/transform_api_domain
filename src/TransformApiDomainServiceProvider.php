@@ -5,7 +5,7 @@ namespace Drupal\transform_api_domain;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderBase;
 
-class TransformDomainServiceProvider extends ServiceProviderBase {
+class TransformApiDomainServiceProvider extends ServiceProviderBase {
 
   /**
    * {@inheritdoc}
