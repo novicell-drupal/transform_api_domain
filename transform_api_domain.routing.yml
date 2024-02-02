@@ -6,14 +6,6 @@ transform_api_domain.change_domain:
   requirements:
     authentication: 'TRUE'
 
-transform_api_domain.debug:
-  path: '/debug/request'
-  defaults:
-    _controller: '\Drupal\transform_api_domain\Controller\DebugController:debugRequest'
-    _title: 'Change domain'
-  requirements:
-    authentication: 'TRUE'
-
 language.negotiation_request_domain:
   path: '/admin/config/regional/language/detection/request_domain'
   defaults:

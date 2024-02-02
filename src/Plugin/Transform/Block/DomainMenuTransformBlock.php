@@ -44,7 +44,7 @@ class DomainMenuTransformBlock extends TransformBlockBase {
   protected $menuActiveTrail;
 
   /**
-   * Egmont domain service.
+   * Transform API domain service.
    *
    * @var \Drupal\transform_api_domain\TransformDomainService
    */
@@ -68,7 +68,7 @@ class DomainMenuTransformBlock extends TransformBlockBase {
    *   The menu tree service.
    * @param \Drupal\Core\Menu\MenuActiveTrailInterface $menu_active_trail
    *   The active menu trail service.
-   * @param \Drupal\transform_api_domain\TransformDomainService $egmont_domain_service
+   * @param \Drupal\transform_api_domain\TransformDomainService $transform_domain_service
    *   Transform API domain service.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, MenuLinkTreeInterface $menu_tree, MenuActiveTrailInterface $menu_active_trail, TransformDomainService $transform_domain_service, EntityStorageInterface $menu_storage) {
