@@ -61,3 +61,12 @@ function _transform_api_domain_restrict_node_to_editor(\Drupal\Core\Entity\Entit
 
   return AccessResult::forbidden();
 }
+
+/**
+ * @param \Drupal\Core\Entity\EntityTypeInterface[] $entity_types
+ */
+function transform_api_domain_entity_type_build(&$entity_types) {
+  if (Drupal::moduleHandler()->moduleExists('domain_simple_sitemap') && isset($entity_types['simple_sitemap'])) {
+    $entity_types['simple_sitemap']->setClass(\Drupal\transform_api_domain\Entity\TransformDomainSimpleSitemap::class);
+  }
+}
