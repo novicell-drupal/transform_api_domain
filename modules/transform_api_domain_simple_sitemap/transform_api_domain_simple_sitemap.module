@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @param \Drupal\Core\Entity\EntityTypeInterface[] $entity_types
+ */
+function transform_api_domain_simple_sitemap_entity_type_build(&$entity_types) {
+  if (Drupal::moduleHandler()->moduleExists('domain_simple_sitemap') && isset($entity_types['simple_sitemap'])) {
+    $entity_types['simple_sitemap']->setClass(\Drupal\transform_api_domain_simple_sitemap\Entity\TransformDomainSimpleSitemap::class);
+  }
+}
+
+
+/**
+ * Implements hook_simple_sitemap_links_alter().
+ */
+function transform_api_domain_simple_sitemap_simple_sitemap_links_alter(array &$links, $sitemap_variant) {
+  // Check if transform_api language negotiation is enabled.
+  $config = \Drupal::config('language.negotiation');
+
+  $language_mappings = $config->get('request_domain');
+
+  if (empty($language_mappings)) {
+    // If the transform_api_domain language negotiation is not used,
+    // use the default domain base url.
+    return;
+  }
+
+  // Resolve this variant to a domain.
+  $storage = \Drupal::entityTypeManager()->getStorage('domain');
+
+  if (isset($sitemap_variant->type) && $domain = $storage->load($sitemap_variant->type)) {
+    $domain_language_mappings = $language_mappings[$domain->id()] ?? NULL;
+
+    if (empty($domain_language_mappings)) {
+      // If the domain is not in the mappings, use the default domain base url.
+      return;
+    }
+
+    // The base URL of the domain is also its path.
+    $front = $domain->getPath();
+
+    // Replace front page URL with language mapping hostname.
+    foreach ($links as $i => $link) {
+      if ($link['url'] == $front) {
+        $langcode = $link['langcode'];
+
+        $lanugage_mapping_url = $domain_language_mappings[$langcode] ?? NULL;
+
+        if (empty($lanugage_mapping_url)) {
+          // If the domain is not in the mappings, use the default domain base url.
+          return;
+        }
+
+        // Replace domain hostname with language mapping hostname.
+        $links[$i]['url'] = str_replace($domain->getHostname(), $lanugage_mapping_url, $link['url']);
+      }
+    }
+  }
+}

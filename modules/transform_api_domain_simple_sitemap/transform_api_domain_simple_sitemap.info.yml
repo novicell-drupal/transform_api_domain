@@ -1,0 +1,10 @@
+name: 'Transform API Domain Simple Sitemap'
+type: module
+description: 'Contains custom functionality extending simple_sitemap module.'
+package: Drupal Premium
+core_version_requirement: ^10
+version: '1.0'
+
+dependencies:
+  - transform_api_domain:transform_api_domain
+  - simple_sitemap:simple_sitemap
