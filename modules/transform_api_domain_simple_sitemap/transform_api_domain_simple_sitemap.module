@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * Implements hook_simple_sitemap_links_alter().
+ */
+function transform_api_domain_simple_sitemap_simple_sitemap_links_alter(array &$links, $sitemap_variant) {
+  // Check if transform_api language negotiation is enabled.
+  $config = \Drupal::config('language.negotiation');
+
+  $languageMappings = $config->get('request_domain');
+
+  if (empty($languageMappings)) {
+    // If the transform_api_domain language negotiation is not used,
+    // use the default domain base url.
+    return;
+  }
+
+  // Resolve this variant to a domain.
+  $storage = \Drupal::entityTypeManager()->getStorage('domain');
+
+  if (isset($sitemap_variant->type) && $domain = $storage->load($sitemap_variant->type)) {
+    $domainLanguageMappings = $languageMappings[$domain->id()] ?? NULL;
+
+    if (empty($domainLanguageMappings)) {
+      // If the domain is not in the mappings, use the default domain base url.
+      return;
+    }
+
+    // The base URL of the domain is also its path.
+    $front = $domain->getPath();
+
+    // Replace any link URLs that match the front page's URL with the domain's
+    // base URL.
+    foreach ($links as $i => $link) {
+      if ($link['url'] == $front) {
+        $langcode = $link['langcode'];
+
+        $lanugage_mapping_url = $domainLanguageMappings[$langcode] ?? NULL;
+
+        if (empty($lanugage_mapping_url)) {
+          // If the domain is not in the mappings, use the default domain base url.
+          return;
+        }
+
+        // Replace domain hostname with language mapping hostname.
+        $links[$i]['url'] = str_replace($domain->getHostname(), $lanugage_mapping_url, $link['url']);
+      }
+    }
+  }
+}

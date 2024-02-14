@@ -1,0 +1,5 @@
+services:
+  transform_api_domain_simple_sitemap.route_subscriber:
+    class: Drupal\transform_api_domain_simple_sitemap\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
