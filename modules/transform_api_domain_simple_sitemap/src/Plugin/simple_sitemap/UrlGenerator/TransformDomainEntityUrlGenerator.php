@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\transform_api_domain\Plugin\simple_sitemap\UrlGenerator;
+namespace Drupal\transform_api_domain_simple_sitemap\Plugin\simple_sitemap\UrlGenerator;
 
 use Drupal\Core\Cache\MemoryCache\MemoryCacheInterface;
 use Drupal\Core\Entity\ContentEntityInterface;

@@ -1,6 +1,16 @@
 <?php
 
 /**
+ * @param \Drupal\Core\Entity\EntityTypeInterface[] $entity_types
+ */
+function transform_api_domain_simple_sitemap_entity_type_build(&$entity_types) {
+  if (Drupal::moduleHandler()->moduleExists('domain_simple_sitemap') && isset($entity_types['simple_sitemap'])) {
+    $entity_types['simple_sitemap']->setClass(\Drupal\transform_api_domain_simple_sitemap\Entity\TransformDomainSimpleSitemap::class);
+  }
+}
+
+
+/**
  * Implements hook_simple_sitemap_links_alter().
  */
 function transform_api_domain_simple_sitemap_simple_sitemap_links_alter(array &$links, $sitemap_variant) {

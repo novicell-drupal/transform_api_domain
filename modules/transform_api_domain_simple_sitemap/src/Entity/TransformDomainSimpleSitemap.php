@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\transform_api_domain\Entity;
+namespace Drupal\transform_api_domain_simple_sitemap\Entity;
 
 use Drupal\domain_simple_sitemap\Entity\DomainSimpleSitemap;
 use Drupal\transform_api_domain\Plugin\LanguageNegotiation\LanguageNegotiationRequestDomain;
