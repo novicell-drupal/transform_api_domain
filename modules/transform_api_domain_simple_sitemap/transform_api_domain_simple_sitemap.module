@@ -53,6 +53,9 @@ function transform_api_domain_simple_sitemap_simple_sitemap_links_alter(array &$
 
         // Replace domain hostname with language mapping hostname.
         $links[$i]['url'] = str_replace($domain->getHostname(), $lanugage_mapping_url, $link['url']);
+
+        // Set priority to 1.0 for the front page.
+        $links[$i]['priority'] = "1.0";
       }
     }
   }
