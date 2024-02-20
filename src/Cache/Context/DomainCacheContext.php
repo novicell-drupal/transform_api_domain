@@ -24,6 +24,8 @@ class DomainCacheContext extends RequestStackCacheContextBase {
     $request = $this->requestStack->getCurrentRequest();
     if ($request->headers->has(TransformDomainNegotiator::FRONTEND_HEADER)) {
       return $request->headers->get(TransformDomainNegotiator::FRONTEND_HEADER);
+    } elseif ($request->query->has(TransformDomainNegotiator::QUERY_ARGUMENT)) {
+      return $request->query->get(TransformDomainNegotiator::QUERY_ARGUMENT);
     } elseif ($request->hasSession()) {
       return $request->getSession()->get(TransformDomainService::SESSION_KEY);
     }
