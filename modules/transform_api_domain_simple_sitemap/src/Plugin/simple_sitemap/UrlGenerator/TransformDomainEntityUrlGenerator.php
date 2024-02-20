@@ -26,40 +26,62 @@ use Drupal\simple_sitemap\Settings;
  */
 class TransformDomainEntityUrlGenerator extends DomainEntityUrlGenerator {
 
-  protected array $languageMappings = [];
+  protected array $urlLanguageMappings = [];
+  protected array $requestDomainLanguageMappings = [];
 
   public function __construct(array $configuration, $plugin_id, $plugin_definition, Logger $logger, Settings $settings, LanguageManagerInterface $language_manager, EntityTypeManagerInterface $entity_type_manager, EntityHelper $entity_helper, EntityManager $entities_manager, UrlGeneratorManager $url_generator_manager, MemoryCacheInterface $memory_cache) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $logger, $settings, $language_manager, $entity_type_manager, $entity_helper, $entities_manager, $url_generator_manager, $memory_cache);
 
     $config = \Drupal::config('language.negotiation');
 
-    if ($config->get('request_domain')) {
-      $this->languageMappings = $config->get('request_domain');
-    }
+    $this->urlLanguageMappings = $config->get('url') ?? [];
+    $this->requestDomainLanguageMappings = $config->get('request_domain') ?? [];
   }
 
+  /**
+   * Replace the base url with the custom domain base url if possible.
+   *
+   * @param string $url
+   *   The url to replace the base url.
+   * @param string $language_id
+   *   ID of the language used to generate the URL.
+   *
+   * @return string
+   *   The url with the base url replaced.
+   */
   protected function replaceBaseUrlWithCustomLanguageBaseUrl(string $url, string $language_id): string {
-    if (empty($this->languageMappings)) {
+    if (empty($this->requestDomainLanguageMappings)) {
       // If the transform_api_domain language negotiation is not used,
       // use the default domain base url.
       return $this->replaceBaseUrlWithCustom($url);
     }
-
     /** @var \Drupal\domain\DomainInterface $domain */
     $domain = \Drupal::service('domain.negotiator')->getActiveDomain();
 
-    $domain_mapping = $this->languageMappings[$domain->id()] ?? NULL;
+    $domain_mapping = $this->requestDomainLanguageMappings[$domain->id()] ?? NULL;
 
     if (empty($domain_mapping) || empty($domain_mapping[$language_id])) {
       // If the domain is not in the mappings, use the default domain base url.
       return $this->replaceBaseUrlWithCustom($url);
     }
 
-    $base_url = $domain_mapping[$language_id];
+    $domain_base_url = $domain_mapping[$language_id];
 
-    return str_replace($GLOBALS['base_url'], $domain->getScheme() . $base_url, $url);
+    if (empty($this->urlLanguageMappings) || empty($this->urlLanguageMappings[$language_id])) {
+      return str_replace($GLOBALS['base_url'], $domain->getScheme() . $domain_base_url, $url);
+    }
+
+    // When site is using url language negotiation,
+    // generated urls are absolute and contain the base url.
+    // We need to replace the base url with the custom domain base url.
+    $base_url = $this->urlLanguageMappings[$language_id];
+
+    return str_replace($base_url, $domain_base_url, $url);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   protected function getAlternateUrlsForAllLanguages(Url $url_object): array {
     $alternate_urls = [];
     if ($url_object->access($this->anonUser)) {
@@ -76,6 +98,9 @@ class TransformDomainEntityUrlGenerator extends DomainEntityUrlGenerator {
     return $alternate_urls;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   protected function getAlternateUrlsForDefaultLanguage(Url $url_object): array {
     $alternate_urls = [];
     if ($url_object->access($this->anonUser)) {
@@ -88,6 +113,9 @@ class TransformDomainEntityUrlGenerator extends DomainEntityUrlGenerator {
     return $alternate_urls;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   protected function getAlternateUrlsForTranslatedLanguages(ContentEntityInterface $entity, Url $url_object): array {
     $alternate_urls = [];
 
