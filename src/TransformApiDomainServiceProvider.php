@@ -16,6 +16,8 @@ class TransformApiDomainServiceProvider extends ServiceProviderBase {
     $definition = $container->getDefinition('domain.negotiator');
     $definition->setClass(TransformDomainNegotiator::class);
 
+    $definition = $container->getDefinition('path_alias.manager');
+    $definition->setClass(TransformAliasManager::class);
   }
 
 }
