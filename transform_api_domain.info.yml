@@ -3,6 +3,7 @@ type: module
 description: 'Contains custom domain functionality.'
 package: Drupal Premium
 core_version_requirement: ^10 || ^11
+version: '1.0'
 
 dependencies:
   - domain:domain
